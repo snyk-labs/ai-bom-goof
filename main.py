@@ -15,12 +15,19 @@ def main():
         if not user_input:
             continue
 
-        response = client.responses.create(
+        print("Assistant: ", end="", flush=True)
+        
+        stream = client.responses.create(
             model="gpt-4o-mini",
-            input=user_input
+            input=user_input,
+            stream=True
         )
 
-        print(f"Assistant: {response.output_text}\n")
+        for event in stream:
+            if hasattr(event, 'delta') and event.delta:
+                print(event.delta, end="", flush=True)
+        
+        print("\n")
 
 
 if __name__ == "__main__":
