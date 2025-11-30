@@ -19,6 +19,7 @@ def main():
         
         stream = client.responses.create(
             model="gpt-4o-mini",
+            instructions="Be concise and brief in your responses.",
             input=user_input,
             stream=True
         )
