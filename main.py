@@ -1,4 +1,5 @@
 from openai import OpenAI
+import time
 
 
 def main():
@@ -27,6 +28,7 @@ def main():
         for event in stream:
             if hasattr(event, 'delta') and event.delta:
                 print(event.delta, end="", flush=True)
+                time.sleep(0.15)
         
         print("\n")
 
