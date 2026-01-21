@@ -10,7 +10,9 @@
 	},
 	"remoteUser": "vscode",
 	"containerUser": "vscode",
+	"updateRemoteUserUID": false,
 	"runArgs": [
-		"--userns=keep-id:uid=1000,gid=1000"
+		"--userns=keep-id:uid=1000,gid=1000",
+		"--mount=type=tmpfs,destination=/tmp,tmpfs-mode=1777"
 	]
 }
