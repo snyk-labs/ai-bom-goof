@@ -8,16 +8,15 @@
 		"ghcr.io/devcontainer-community/devcontainer-features/astral.sh-uv:1": {},
 		"ghcr.io/devcontainers/features/node:1": {}
 	},
-	// Setup for Podman non-root user:
-	// --- START ---
-	"remoteUser": "vscode",
-	"containerUser": "vscode",
-	"updateRemoteUserUID": false,
-	"runArgs": [
-		"--userns=keep-id:uid=1000,gid=1000",
-		"--mount=type=tmpfs,destination=/tmp,tmpfs-mode=1777"
-	],
-	// --- END ---
+	
+	// Snyk CLI auth:
+	// map host port 8080 to the local port 8080
+    "forwardPorts": [
+        8080,
+        8080
+    ],
+	// -------------
+	
 	// Install OpenCode CLI
-	"postCreateCommand": "curl -fsSL https://opencode.ai/install | bash"
+	"postCreateCommand": "bash .devcontainer/post-create.sh"
 }
