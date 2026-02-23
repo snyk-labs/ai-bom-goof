@@ -66,3 +66,10 @@ This script demonstrates **visual question answering (VQA)** using Salesforce's 
 - Returns a natural language answer based on the image content
 
 **Note:** The first run will download the model (~1GB).
+
+## Examples
+
+Other example projects you can clone and scan for AI-BOM findings:
+- https://github.com/snyk-labs/ai-buffet/
+- https://github.com/aws-samples/generative-ai-on-amazon-sagemaker/
+- https://github.com/aws-samples/amazon-bedrock-workshop
