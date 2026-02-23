@@ -26,13 +26,13 @@ async def run(mcp_server: MCPServer):
 
 async def main():
     async with MCPServerSse(
-        name="SSE Python Server",
+        name="Atlassian MCP Server",
         params={
-            "url": "http://localhost:8000/sse",
+            "url": "https://mcp.atlassian.com/v1/mcp",
         },
     ) as server:
         trace_id = gen_trace_id()
-        with trace(workflow_name="SSE Example", trace_id=trace_id):
+        with trace(workflow_name="Atlassian MCP Example", trace_id=trace_id):
             print(f"View trace: https://platform.openai.com/traces/trace?trace_id={trace_id}\n")
             await run(server)
 
