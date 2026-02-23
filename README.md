@@ -2,6 +2,26 @@
 
 A simple command-line chat application using the OpenAI API.
 
+## How to scan for AI-BOM
+
+Use the Snyk CLI with an AI-BOM command:
+
+```sh
+snyk aibom --experimental --json
+```
+
+Pipe the Snyk CLI output of AI-BOM findings to `jq` to easily find and match your results:
+
+```sh
+snyk aibom --experimental --json  | jq '.components[] | select(."bom-ref" | startswith("model:")) | ."bom-ref"'
+```
+
+Get a fancy visual view of the AI-BOM findings using `ai-bom-visualizer` npm package:
+
+```sh
+snyk aibom --experimental --json  | npx ai-bom-visualizer --open
+```
+
 ## Prerequisites
 
 - [uv](https://docs.astral.sh/uv/) - Python package and project manager
