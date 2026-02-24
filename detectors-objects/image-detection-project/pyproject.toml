@@ -1,0 +1,23 @@
+[project]
+name = "image-detection-project"
+version = "0.1.0"
+description = "Detect and annotate objects in images using Ultralytics YOLO and Supervision."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "supervision",
+    "numpy",
+    "opencv-python-headless",
+    "pillow",
+    "ultralytics",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+]
