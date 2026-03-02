@@ -120,6 +120,7 @@ def draw_detections(image: Image.Image, detections: list[dict]) -> Image.Image:
     return annotated
 
 
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_IMAGE_CANDIDATES = ["image.png", "image.jpeg", "image.jpg"]
 
 
@@ -132,11 +133,12 @@ def resolve_image_path() -> str:
         sys.exit(1)
 
     for candidate in DEFAULT_IMAGE_CANDIDATES:
-        if os.path.isfile(candidate):
-            return candidate
+        path = os.path.join(PROJECT_DIR, candidate)
+        if os.path.isfile(path):
+            return path
 
     tried = ", ".join(DEFAULT_IMAGE_CANDIDATES)
-    print(f"Error: no image found (tried {tried})", file=sys.stderr)
+    print(f"Error: no image found in {PROJECT_DIR} (tried {tried})", file=sys.stderr)
     sys.exit(1)
 
 
@@ -156,7 +158,7 @@ def main() -> None:
     print("Drawing bounding boxes ...")
     annotated = draw_detections(image, detections)
 
-    output_path = os.environ.get("OUTPUT_PATH", "output_annotated.png")
+    output_path = os.environ.get("OUTPUT_PATH", os.path.join(PROJECT_DIR, "output_annotated.png"))
     annotated.save(output_path)
     print(f"Annotated image saved to {output_path}")
 
