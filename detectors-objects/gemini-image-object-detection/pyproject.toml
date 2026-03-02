@@ -1,0 +1,10 @@
+[project]
+name = "gemini-image-object-detection"
+version = "0.1.0"
+description = "Detect and annotate objects in images using Google Gemini's vision capabilities."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "google-genai",
+    "pillow",
+]

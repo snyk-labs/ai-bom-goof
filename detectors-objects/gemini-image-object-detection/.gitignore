@@ -1,0 +1,33 @@
+# Output images
+output_*.png
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# UV
+#uv.lock
+
+# Environments
+env/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+
+# mypy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
