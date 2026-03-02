@@ -12,7 +12,7 @@
 	// map host port 8080 to the local port 8080
 	"forwardPorts": [
 		8080,
-		8080
+		8081
 	],
 	// -------------
 	// Initialize access to 1Password CLI in the container
