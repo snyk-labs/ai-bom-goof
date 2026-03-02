@@ -293,12 +293,14 @@ source = { virtual = "." }
 dependencies = [
     { name = "google-genai" },
     { name = "pillow" },
+    { name = "pydantic" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "google-genai" },
     { name = "pillow" },
+    { name = "pydantic" },
 ]
 
 [[package]]

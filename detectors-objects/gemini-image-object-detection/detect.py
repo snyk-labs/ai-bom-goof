@@ -6,16 +6,17 @@ import json
 import os
 import re
 import sys
+from typing import List
 
 from google import genai
 from google.genai import types
 from PIL import Image, ImageDraw, ImageFont
+from pydantic import BaseModel, Field
 
 
 PROMPT = (
     "Detect all of the prominent items in the image. "
-    "Return a JSON array of objects, each with a \"label\" (string) and "
-    "\"box_2d\" ([ymin, xmin, ymax, xmax]) normalized to 0-1000."
+    "The box_2d should be [ymin, xmin, ymax, xmax] normalized to 0-1000."
 )
 
 PALETTE = [
@@ -24,6 +25,19 @@ PALETTE = [
     "#2C99A8", "#00C2FF", "#344593", "#6473FF", "#0018EC",
     "#8438FF", "#520085", "#CB38FF", "#FF95C8", "#FF37C7",
 ]
+
+
+class Detection(BaseModel):
+    label: str = Field(description="Short name of the detected object")
+    box_2d: List[int] = Field(
+        description="Bounding box as [ymin, xmin, ymax, xmax] normalized to 0-1000",
+        min_length=4,
+        max_length=4,
+    )
+
+
+class DetectionResult(BaseModel):
+    detections: List[Detection]
 
 
 def load_image(path: str) -> Image.Image:
@@ -43,15 +57,24 @@ def parse_json_response(text: str) -> list[dict]:
 
 def detect_objects(image: Image.Image) -> list[dict]:
     client = genai.Client()
-    config = types.GenerateContentConfig(response_mime_type="application/json")
+    config = types.GenerateContentConfig(
+        response_mime_type="application/json",
+        response_schema=DetectionResult,
+        thinking_config=types.ThinkingConfig(thinking_budget=0),
+    )
 
     response = client.models.generate_content(
-        model="gemini-3-flash-preview",
+        model="gemini-2.5-flash",
         contents=[image, PROMPT],
         config=config,
     )
 
-    return parse_json_response(response.text)
+    parsed = parse_json_response(response.text)
+
+    if isinstance(parsed, dict) and "detections" in parsed:
+        parsed = parsed["detections"]
+
+    return [d for d in parsed if isinstance(d, dict) and "box_2d" in d]
 
 
 def draw_detections(image: Image.Image, detections: list[dict]) -> Image.Image:
@@ -64,8 +87,12 @@ def draw_detections(image: Image.Image, detections: list[dict]) -> Image.Image:
     except OSError:
         font = ImageFont.load_default()
 
+    drawn = 0
     for i, det in enumerate(detections):
-        box = det["box_2d"]
+        box = det.get("box_2d")
+        if not box or len(box) < 4:
+            print(f"  [skip] detection {i} missing valid box_2d: {det}")
+            continue
         label = det.get("label", "object")
 
         y1 = int(box[0] / 1000 * height)
@@ -73,7 +100,7 @@ def draw_detections(image: Image.Image, detections: list[dict]) -> Image.Image:
         y2 = int(box[2] / 1000 * height)
         x2 = int(box[3] / 1000 * width)
 
-        color = PALETTE[i % len(PALETTE)]
+        color = PALETTE[drawn % len(PALETTE)]
         draw.rectangle([x1, y1, x2, y2], outline=color, width=3)
 
         text_bbox = draw.textbbox((0, 0), label, font=font)
@@ -88,6 +115,7 @@ def draw_detections(image: Image.Image, detections: list[dict]) -> Image.Image:
 
         draw.rectangle(text_bg, fill=color)
         draw.text(text_origin, label, fill="white", font=font)
+        drawn += 1
 
     return annotated
 
@@ -123,7 +151,7 @@ def main() -> None:
     detections = detect_objects(image)
     print(f"Detected {len(detections)} object(s):")
     for det in detections:
-        print(f"  - {det.get('label', '?')}: {det['box_2d']}")
+        print(f"  - {det.get('label', '?')}: {det.get('box_2d', 'N/A')}")
 
     print("Drawing bounding boxes ...")
     annotated = draw_detections(image, detections)
