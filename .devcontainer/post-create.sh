@@ -2,7 +2,7 @@
 set -e
 
 # Install OpenCode CLI
-curl -fsSL https://opencode.ai/install | bash
+# curl -fsSL https://opencode.ai/install | bash
 
 # Install Snyk CLI
 curl --compressed https://static.snyk.io/cli/latest/snyk-linux-arm64 -o snyk
